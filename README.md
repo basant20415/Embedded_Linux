@@ -100,8 +100,6 @@ In general, both the 32-bit and the 64-bit variants have been veriﬁed; however
 
 2- install yocto project bitbake extension on vs code.
 
-![alt text](image-1.png)
-
 3-prepare the environment host machine by installing these additional software packages 
 
     user@ubuntu:~$ sudo apt-get install gawk wget git-cor
