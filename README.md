@@ -120,13 +120,13 @@ In general, both the 32-bit and the 64-bit variants have been veriﬁed; however
 
 Poky provides the script oe-init-build-env to create a new build environment. The script sets up the build environment’s directory structure and initializes the core set of conﬁguration ﬁles. It also sets a series of shell variables needed by the build system. You do not directly execute the oe-init-build-env script but use the source command to export the shell variable settings to the current shell
 
-##### 1. source <script>
+##### - source <script>
     source oe-init-build-env
 
 Inside the newly created build environment, the script added the directory conf and placed the two conﬁguration ﬁles in it:
 bblayers.conf and local.conf .
 
-##### 2. after sourcing ---> build directory.
+##### - after sourcing ---> build directory.
     cd conf
     vi local.conf
 
@@ -134,19 +134,19 @@ In local.conf , various variables are set that inﬂuence how BitBake builds you
 ###### Linux OS stack
 ![alt text](image-2.png)
 
-##### 3. change Machine Variable.
+##### - change Machine Variable.
     MACHINE ??="qemuarm64"
 
-##### 4. Add Number of threads:
+##### - Add Number of threads:
 
     BB_NUMBER_THREADS="8"
     PARALLEL_MAKE="-j 8"
 
 
 
-##### 5. build image.
+##### - build image.
     bitbake core-image-minimal # image name (* meta-data *).
-##### 6. after build
+##### - after build
     runqemu <MACHINE> # runqemu qemuarm64 nographic
 
 6- and finally add the path of this file to ~./bashrc
