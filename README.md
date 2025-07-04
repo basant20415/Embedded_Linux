@@ -141,3 +141,4 @@ In general, both the 32-bit and the 64-bit variants have been veriﬁed; however
 6- and finally add the path of this file to ~./bashrc
 
 ![alt text](image.png)
+![alt text](image-1.png)
