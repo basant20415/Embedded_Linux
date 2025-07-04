@@ -104,3 +104,11 @@ In general, both the 32-bit and the 64-bit variants have been veriﬁed; however
 
     sudo apt install gawk wget git diffstat unzip texinfo gcc build-essential chrpath socat cpio python3 python3-pip python3-pexpect xz-utils debianutils iputils-ping python3-git python3-jinja2 libegl1-mesa libsdl1.2-dev python3-subunit mesa-common-dev zstd liblz4-tool file locales libacl1
     sudo locale-gen en_US.UTF-8
+
+4- Choose YOCTO release [﻿- - ﻿wiki.yoctoproject.org/wiki/Releases](https://wiki.yoctoproject.org/wiki/Releases) 
+    - [﻿github.com/yoctoproject/poky](https://github.com/yoctoproject/poky) 
+
+    # clone poky.
+git clone -b kirkstone https://github.com/yoctoproject/poky.git
+# switch directory.
+cd poky
