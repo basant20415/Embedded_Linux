@@ -42,7 +42,7 @@ and the important thing is that in our graduation project we didn't need to deve
     **Yocto Project is our subject**. It is listed here to complete this overview of the embedded Linux landscape. 
     You can ﬁnd its webpage at https://www.yoctoproject.org.
 
-## we have to approaches for building our embedded project
+## we have to approaches for building our embedded project:
 - top-down :
 
     In this approach, you start with one of the many
@@ -117,6 +117,8 @@ In general, both the 32-bit and the 64-bit variants have been veriﬁed; however
     cd poky
 
 5- Conﬁguring the Build Environment
+
+Poky provides the script oe-init-build-env to create a new build environment. The script sets up the build environment’s directory structure and initializes the core set of conﬁguration ﬁles. It also sets a series of shell variables needed by the build system. You do not directly execute the oe-init-build-env script but use the source command to export the shell variable settings to the current shell
 
 ##### 1. source <script>
     source oe-init-build-env
