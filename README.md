@@ -1,1 +1,1 @@
-# yocto_training
+## Why Linux for Embedded Systems?
