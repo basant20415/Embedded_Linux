@@ -73,18 +73,18 @@ and the important thing is that in our graduation project we didn't need to deve
 - how to prepare your computer to become a YoctoProject development host.
 
 #### Hardware Requirements
-Despite their capability to build Linux OS stacks, the Yocto Project tools require a build host with an x86 architecture CPU.
-Both 32-bit and 64-bit CPUs are supported. A system with a 64-bit CPU is preferred for throughput reasons. The Yocto Project’s build system makes use of parallel processing whenever possible. Therefore, a build host with multiple CPUs or a multicore CPU signiﬁcantly reduces build time. Of course, CPU clock speed also has an impact on how quickly packages can be built.Memory is also an important factor. BitBake, the Yocto Project build engine, parses thousands of recipes and creates a cache with build dependencies. Furthermore, the compilers require memory for data structures and more. 
+    Despite their capability to build Linux OS stacks, the Yocto Project tools require a build host with an x86 architecture CPU.
+    Both 32-bit and 64-bit CPUs are supported. A system with a 64-bit CPU is preferred for throughput reasons. The Yocto Project’s build system makes use of parallel processing whenever possible. Therefore, a build host with multiple CPUs or a multicore CPU signiﬁcantly reduces build time. Of course, CPU clock speed also has an impact on how quickly packages can be built.Memory is also an important factor. BitBake, the Yocto Project build engine, parses thousands of recipes and creates a cache with build dependencies. Furthermore, the compilers require memory for data structures and more. 
 **The tools do not run on a system with less than 1 GB of RAM; 4 GB or more is recommended.**
 
-Disk space is another consideration. A full build process, which creates an image with a graphical user interface (GUI) based on X11 currently consumes about 50 GB of disk space. If, in the future, you would like to build for more architectures and/or add more packages to your builds, you will require additional space.**It is recommended that the hard disk of your system has at least 100 GB of free space**. Since regular hard disks with large
-capacity have become quite aﬀordable,**we recommend that you get one with 500 GB or more to host all your Yocto Project build environments.**
+    Disk space is another consideration. A full build process, which creates an image with a graphical user interface (GUI) based on X11 currently consumes about 50 GB of disk space. If, in the future, you would like to build for more architectures and/or add more packages to your builds, you will require additional space.**It is recommended that the hard disk of your system has at least 100 GB of free space**. Since regular hard disks with large
+    capacity have become quite aﬀordable,**we recommend that you get one with 500 GB or more to host all your Yocto Project build environments.**
 
-Since build systems read a lot of data from the disk and write large amounts of build output data to it, disks with higher I/O throughput rates can also signiﬁcantly accelerate the build process.
-Using a solid-state disk can further improve your build experience, but these devices, in particular with larger capacity, are substantially higher in cost than regular disks with spinning platters. Whether you are using conventional hard drives orsolid-state disks, additional performance gains can be realized with a redundant array of independent disks (RAID) setup, such as RAID 0.
+    Since build systems read a lot of data from the disk and write large amounts of build output data to it, disks with higher I/O throughput rates can also signiﬁcantly accelerate the build process.
+    Using a solid-state disk can further improve your build experience, but these devices, in particular with larger capacity, are substantially higher in cost than regular disks with spinning platters. Whether you are using conventional hard drives orsolid-state disks, additional performance gains can be realized with a redundant array of independent disks (RAID) setup, such as RAID 0.
 
 - Internet Connection
 
-The OpenEmbedded build system that you obtain from the project’s website contains only the build system itself—BitBake and the metadata that guide it. It does not contain any source packages for the software it is going to build. These are automatically downloaded as needed while a build is running.
-Therefore, you need a live connection to the Internet, preferably a high-speed connection.
-Of course, the downloaded source packages are stored on your system and reused for future builds. You are also able to download all source packages upfront and build them later oﬄine without a connection to the Internet.
+    The OpenEmbedded build system that you obtain from the project’s website contains only the build system itself—BitBake and the metadata that guide it. It does not contain any source packages for the software it is going to build. These are automatically downloaded as needed while a build is running.
+    Therefore, you need a live connection to the Internet, preferably a high-speed connection.
+    Of course, the downloaded source packages are stored on your system and reused for future builds. You are also able to download all source packages upfront and build them later oﬄine without a connection to the Internet.
