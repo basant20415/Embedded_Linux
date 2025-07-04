@@ -72,7 +72,7 @@ and the important thing is that in our graduation project we didn't need to deve
 
 - how to prepare your computer to become a YoctoProject development host.
 
-#### Hardware Requirements
+### Hardware Requirements
 Despite their capability to build Linux OS stacks, the Yocto Project tools require a build host with an x86 architecture CPU.
 Both 32-bit and 64-bit CPUs are supported. A system with a 64-bit CPU is preferred for throughput reasons. The Yocto Project’s build system makes use of parallel processing whenever possible. Therefore, a build host with multiple CPUs or a multicore CPU signiﬁcantly reduces build time. Of course, CPU clock speed also has an impact on how quickly packages can be built.Memory is also an important factor. BitBake, the Yocto Project build engine, parses thousands of recipes and creates a cache with build dependencies. Furthermore, the compilers require memory for data structures and more. 
 **The tools do not run on a system with less than 1 GB of RAM; 4 GB or more is recommended.**
@@ -89,7 +89,7 @@ The OpenEmbedded build system that you obtain from the project’s website conta
 Therefore, you need a live connection to the Internet, preferably a high-speed connection.
 Of course, the downloaded source packages are stored on your system and reused for future builds. You are also able to download all source packages upfront and build them later oﬄine without a connection to the Internet.
 
-#### software requirement
+### software requirement
 1- you will need a recent Linux distribution:
 - CentOS
 - Fedora
@@ -130,7 +130,6 @@ In general, both the 32-bit and the 64-bit variants have been veriﬁed; however
 
 ##### 4. Add Number of threads:
 
-###### Number of threads.
     BB_NUMBER_THREADS="8"
     PARALLEL_MAKE="-j 8"
 
