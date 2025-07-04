@@ -108,10 +108,10 @@ In general, both the 32-bit and the 64-bit variants have been veriﬁed; however
 4- Choose YOCTO release [﻿- - ﻿wiki.yoctoproject.org/wiki/Releases](https://wiki.yoctoproject.org/wiki/Releases) 
     - [﻿github.com/yoctoproject/poky](https://github.com/yoctoproject/poky) 
 
-#####clone poky.
+##### clone poky.
 
     git clone -b kirkstone https://github.com/yoctoproject/poky.git
 
-#####switch directory.
+##### switch directory.
 
     cd poky
