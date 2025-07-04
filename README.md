@@ -134,7 +134,7 @@ In general, both the 32-bit and the 64-bit variants have been veriﬁed; however
     BB_NUMBER_THREADS="8"
     PARALLEL_MAKE="-j 8"
 
-###### 5. build image.
+##### 5. build image.
     bitbake core-image-minimal # image name (* meta-data *).
 ##### 6. after build
     runqemu <MACHINE> # runqemu qemuarm64 nographic
