@@ -20,7 +20,7 @@ and the important thing is that in our graduation project we didn't need to deve
 - SUSE (https://tr.opensuse.org/MicroSUSE)
 - Ubuntu (https://wiki.ubuntu.com/EmbeddedUbuntu)
 
-**and we are working on Ubuntu**
+  **and we are working on Ubuntu**
 
 ## Embedded Linux Development Tools
 - Baserock
@@ -41,3 +41,24 @@ and the important thing is that in our graduation project we didn't need to deve
 
     **Yocto Project is our subject**. It is listed here to complete this overview of the embedded Linux landscape. 
     You can ﬁnd its webpage at https://www.yoctoproject.org.
+
+## we have to approaches for building our embedded project
+- top-down :
+
+In this approach, you start with one of the many
+available Linux distributions and customize it according to your requirements by adding and/or removing software packages.
+The author took this approach many years ago with a high-speed image processing system running on x86 server hardware. It is a viable approach and has its appeal because using a tested and maintained distribution alleviates some of the more tedious tasks of building and maintaining your own distribution. And you may be able to get support for it.
+However, it may limit you in your choice of hardware, since most oﬀ-the-shelf Linux distributions are built for x86 hardware. And, of course, picking the right distribution to start oﬀ with and rightsizing it for your target device is not that simple either.
+
+
+- Bottom-up: 
+
+The bottom-up approach entails building your own custom Linux distribution from source code starting with a bootloader and the kernel and then adding software packages to support the applications for your target device. This approach gives you the most control, but it is also a challenging task. You will have to make many choices along the way, from selecting the right toolchain and setting kernel conﬁguration options to choosing the right software packages. Some of these choices are interdependent, such as the choice of toolchain and target library, and taking the wrong turn can quickly send you
+down a dead end. After you have successfully built and deployed your own distribution, you are left with the burden of maintaining it—ﬁnding patches and security updates for the kernel and all the other packages you have integrated with your distribution.
+
+This is where the strengths of the Yocto Project lie. It combines the best of both worlds by providing you with a complete tool set and blueprints to create your own Linux distribution from scratch starting with source code downloads from the upstream projects. 
+The blueprints for various systems that ship with the Yocto Project tools let you build complete operating system stacks within a few hours. 
+You can choose from blueprints that build a target system image for a basic system with command-line login, a system with a graphical user interface for a mobile device, a system that is Linux Standard Base compliant, and many more.
+
+You can use these blueprints as a starting point for your own distribution and modify them by adding and/or removing software packages.
+
