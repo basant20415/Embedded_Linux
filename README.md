@@ -19,6 +19,7 @@ and the important thing is that in our graduation project we didn't need to deve
 - Fedora (https://fedoraproject.org/wiki/Embedded)Gentoo (https://wiki.gentoo.org/wiki/Project:Embedded)
 - SUSE (https://tr.opensuse.org/MicroSUSE)
 - Ubuntu (https://wiki.ubuntu.com/EmbeddedUbuntu)
+
 **and we are working on Ubuntu**
 
 ## Embedded Linux Development Tools
