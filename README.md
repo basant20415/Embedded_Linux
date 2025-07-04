@@ -88,3 +88,10 @@ Using a solid-state disk can further improve your build experience, but these de
 The OpenEmbedded build system that you obtain from the project’s website contains only the build system itself—BitBake and the metadata that guide it. It does not contain any source packages for the software it is going to build. These are automatically downloaded as needed while a build is running.
 Therefore, you need a live connection to the Internet, preferably a high-speed connection.
 Of course, the downloaded source packages are stored on your system and reused for future builds. You are also able to download all source packages upfront and build them later oﬄine without a connection to the Internet.
+
+#### software requirement
+you will need a recent Linux distribution:
+- CentOS
+- Fedora
+- openSUSE
+- **Ubuntu**
