@@ -23,6 +23,7 @@ and the important thing is that in our graduation project we didn't need to deve
 
 ## Embedded Linux Development Tools
 - Baserock
+
 Baserock is an open source project that provides a build system
 for Linux distributions, a development environment, and a
 development workﬂow in one package.
@@ -41,6 +42,7 @@ it limits the choice of conﬁguration options and defaults to
 probably the most commonly used ones for embedded system.
 
 - OpenEmbedded
+
 OpenEmbedded (www.openembedded.org) is a build
 framework composed of tools, conﬁguration data, and recipes to
 create Linux distributions targeted for embedded devices. At
@@ -48,6 +50,7 @@ the core of OpenEmbedded is the BitBake task executor that
 manages the build process.
 
 - The Yocto Project
+
 *Yocto Project is our subject*. It is
 listed here to complete this overview of the embedded Linux landscape. 
 You can ﬁnd its webpage at https://www.yoctoproject.org.
