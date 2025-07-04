@@ -128,7 +128,7 @@ In general, both the 32-bit and the 64-bit variants have been veriﬁed; however
 ##### 3. change Machine Variable.
     MACHINE ??="qemuarm64"
 
-###### 4. Add Number of threads:
+##### 4. Add Number of threads:
 
 ###### Number of threads.
     BB_NUMBER_THREADS="8"
