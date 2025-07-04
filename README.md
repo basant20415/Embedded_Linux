@@ -90,8 +90,19 @@ Therefore, you need a live connection to the Internet, preferably a high-speed c
 Of course, the downloaded source packages are stored on your system and reused for future builds. You are also able to download all source packages upfront and build them later oﬄine without a connection to the Internet.
 
 #### software requirement
-you will need a recent Linux distribution:
+1- you will need a recent Linux distribution:
 - CentOS
 - Fedora
 - openSUSE
 - **Ubuntu**
+
+In general, both the 32-bit and the 64-bit variants have been veriﬁed; however, it is recommended that you use the 64-bit version if your hardware supports it.
+
+2- install yocto project bitbake extension on vs code.
+![alt text](image.png)
+
+3-prepare the environment host machine by installing these additional software packages 
+
+user@ubuntu:~$ sudo apt-get install gawk wget git-cor
+unzip texinfo gcc-multilib build-essential chrpath so
+libsdl1.2-dev xterm
