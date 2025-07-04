@@ -123,9 +123,16 @@ Poky provides the script oe-init-build-env to create a new build environment. Th
 ##### 1. source <script>
     source oe-init-build-env
 
+Inside the newly created build environment, the script added the directory conf and placed the two conﬁguration ﬁles in it:
+bblayers.conf and local.conf .
+
 ##### 2. after sourcing ---> build directory.
     cd conf
     vi local.conf
+
+In local.conf , various variables are set that inﬂuence how BitBake builds your custom Linux OS stack.
+###### Linux OS stack
+![alt text](image-2.png)
 
 ##### 3. change Machine Variable.
     MACHINE ??="qemuarm64"
@@ -134,6 +141,8 @@ Poky provides the script oe-init-build-env to create a new build environment. Th
 
     BB_NUMBER_THREADS="8"
     PARALLEL_MAKE="-j 8"
+
+
 
 ##### 5. build image.
     bitbake core-image-minimal # image name (* meta-data *).
