@@ -63,13 +63,14 @@ and the important thing is that in our graduation project we didn't need to deve
     You can use these blueprints as a starting point for your own distribution and modify them by adding and/or removing software packages.
 
 ## Yocto Project
-    The Yocto Project (YP) is an open source collaboration project containing a comprehensive suite of tools, templates, and resources that helps developers create custom Linux-based systems regardless of the hardware architecture.
+- The Yocto Project (YP) is an open source collaboration project containing a comprehensive suite of tools, templates, and resources that helps   
+  developers create custom Linux-based systems regardless of the hardware architecture.
 
 **It’s not an embedded Linux distribution, it creates a custom one for you.**
 
 ### Prerequisites
 
-    how to prepare your computer to become a YoctoProject development host.
+- how to prepare your computer to become a YoctoProject development host.
 
 #### Hardware Requirements
 Despite their capability to build Linux OS stacks, the Yocto Project tools require a build host with an x86 architecture CPU.
