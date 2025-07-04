@@ -99,6 +99,7 @@ Of course, the downloaded source packages are stored on your system and reused f
 In general, both the 32-bit and the 64-bit variants have been veriﬁed; however, it is recommended that you use the 64-bit version if your hardware supports it.
 
 2- install yocto project bitbake extension on vs code.
+
 ![alt text](image.png)
 
 3-prepare the environment host machine by installing these additional software packages 
