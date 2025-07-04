@@ -103,6 +103,6 @@ In general, both the 32-bit and the 64-bit variants have been veriﬁed; however
 
 3-prepare the environment host machine by installing these additional software packages 
 
-user@ubuntu:~$ sudo apt-get install gawk wget git-cor
-unzip texinfo gcc-multilib build-essential chrpath so
-libsdl1.2-dev xterm
+    user@ubuntu:~$ sudo apt-get install gawk wget git-cor
+    unzip texinfo gcc-multilib build-essential chrpath so
+    libsdl1.2-dev xterm
