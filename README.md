@@ -68,6 +68,7 @@ and the important thing is that in our graduation project we didn't need to deve
 **It’s not an embedded Linux distribution, it creates a custom one for you.**
 
 ### Prerequisites
+
     how to prepare your computer to become a YoctoProject development host.
 
 #### Hardware Requirements
