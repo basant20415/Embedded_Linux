@@ -115,3 +115,26 @@ In general, both the 32-bit and the 64-bit variants have been veriﬁed; however
 ##### switch directory.
 
     cd poky
+
+5- Conﬁguring the Build Environment
+
+##### 1. source <script>
+    source oe-init-build-env
+
+##### 2. after sourcing ---> build directory.
+    cd conf
+    vi local.conf
+
+##### 3. change Machine Variable.
+    MACHINE ??="qemuarm64"
+
+###### 4. Add Number of threads:
+
+###### Number of threads.
+    BB_NUMBER_THREADS="8"
+    PARALLEL_MAKE="-j 8"
+
+###### 5. build image.
+    bitbake core-image-minimal # image name (* meta-data *).
+##### 6. after build
+    runqemu <MACHINE> # runqemu qemuarm64 nographic
