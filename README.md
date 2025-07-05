@@ -150,7 +150,7 @@ Never forget the quotes around the variable settings. Also note that for PARALLE
     bitbake core-image-minimal # image name (* meta-data *).
 
  - You may also instruct BitBake to ﬁrst download all the sources without building. You can do this with
-    ![alt text](image-3.png)
+![alt text](image-3.png)
 
  - you can instruct BitBake to continue building even if it encounters an error condition as long as there are tasks left that are not impeded by the error:
  ![alt text](image-4.png)
