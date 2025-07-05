@@ -177,6 +177,8 @@ The Yocto Project is not just a single open source project but combines multiple
 ![alt text](image-9.png)
 ![alt text](image-10.png)
 
+
+
 ## what is the difference between OpenEmbedded project , Yocto project , OpenEmbedded-Core
 
 ### openembedded project
@@ -216,6 +218,7 @@ An umbrella project hosted by the Linux Foundation that uses:
 
 **Why does it exist?**
 Yocto Project brings companies together to maintain a standardized, professional framework for embedded Linux — not just hobby layers, but a well-tested, repeatable system.
+
 
 ## typical workﬂow for building opensource software packages
 if you have built open source software packages for a Linux host system before, you may have noticed that the workﬂow follows a speciﬁc pattern. Some of the steps of this workﬂow you execute yourself, whereas others are typically carried out through some sort of automation such as Make or other source-to-binary build systems.
