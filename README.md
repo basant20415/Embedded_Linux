@@ -166,11 +166,13 @@ Never forget the quotes around the variable settings. Also note that for PARALLE
 
 ## Yocto Project Family
 The Yocto Project is not just a single open source project but combines multiple projects under one umbrella.
+
 ![alt text](image-5.png)
 ![alt text](image-6.png)
 ![alt text](image-7.png)
 
 ## Important Yocto Project Terms
+
 ![alt text](image-8.png)
 ![alt text](image-9.png)
 ![alt text](image-10.png)
