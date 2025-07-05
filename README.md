@@ -176,3 +176,43 @@ The Yocto Project is not just a single open source project but combines multiple
 ![alt text](image-8.png)
 ![alt text](image-9.png)
 ![alt text](image-10.png)
+
+## what is the difference between openembedded project , Yocto project , openembedded-core
+
+### openembedded project
+- The original community project to build embedded Linux distributions with recipes and a build engine (BitBake).
+- Started before the Yocto Project even existed.
+
+#### What it provides:
+- BitBake (the build tool).
+- Lots of metadata: recipes (.bb files) for packages, classes (.bbclass files), and configs (.conf files).
+- Many layers: for different boards, software packages, and use cases.
+**OpenEmbedded is like the big library of all open-source knowledge for building embedded Linux.**
+
+### OpenEmbedded-Core (OE-Core)
+- A small, carefully maintained subset of the OpenEmbedded Project — just the essential base recipes and classes you always need.
+
+**Why was it created?**
+Because OpenEmbedded became huge and messy! 
+
+#### What it provides:
+- Core toolchain recipes (gcc, binutils, glibc/musl).
+- Core system utilities (busybox, bash).
+- Common build classes (base.bbclass, package.bbclass).
+
+### Yocto Project
+An umbrella project hosted by the Linux Foundation that uses:
+
+- BitBake (from OpenEmbedded)
+
+- OE-Core (from OpenEmbedded)
+
+- Extra tools, workflows, and reference layers (Poky).
+
+#### What it provides:
+- Poky — the reference distribution (it’s a combination of BitBake, OE-Core, and extra Yocto layers like meta-poky).
+- Standards and tools for reproducible builds, licensing checks, extensible SDKs, and documentation.
+- A clear development workflow.
+
+**Why does it exist?**
+Yocto Project brings companies together to maintain a standardized, professional framework for embedded Linux — not just hobby layers, but a well-tested, repeatable system.
