@@ -142,10 +142,19 @@ In local.conf , various variables are set that inﬂuence how BitBake builds you
     BB_NUMBER_THREADS="8"
     PARALLEL_MAKE="-j 8"
 
-
+The default value for the two parallelism options BB_NUMBER_THREADS and PARALLEL_MAKE is automatically computed on the basis of the number of CPU cores in the system using all the available cores. You can set the values to less than the cores in your system to limit the load. Using a larger number
+than the number of physical cores is possible but does not speed up the build process. BitBake and Make spawn more threads accordingly, but they run only if there are CPU cores available.
+Never forget the quotes around the variable settings. Also note that for PARALLEL_MAKE , you have to include the -j , such as "-j 4" because this value is passed to the make command verbatim.
 
 ##### - build image.
     bitbake core-image-minimal # image name (* meta-data *).
+
+ - You may also instruct BitBake to ﬁrst download all the sources without building. You can do this with
+    ![alt text](image-3.png)
+
+ - you can instruct BitBake to continue building even if it encounters an error condition as long as there are tasks left that are not impeded by the error:
+ ![alt text](image-4.png)
+ The -k option tells BitBake to continue building until tasks that are not dependent on the error condition are addressed.
 ##### - after build
     runqemu <MACHINE> # runqemu qemuarm64 nographic
 
@@ -153,3 +162,6 @@ In local.conf , various variables are set that inﬂuence how BitBake builds you
 
 ![alt text](image.png)
 ![alt text](image-1.png)
+
+
+page 94
