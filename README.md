@@ -285,3 +285,13 @@ Conﬁguration ﬁles contain global build system settings in the form of simple
 factors, such as layer structure, layer priorities, ﬁle parsing order, and assignment syntax.
 
 BitBake distinguishes several diﬀerent types of conﬁguration ﬁles, but all have the common ﬁle extension .conf .
+
+## BitBake Master Conﬁguration File (bitbake.conf)
+BitBake’s master or main conﬁguration ﬁle is named bitbake.conf . BitBake expects this ﬁle to be present in all of the directories listed in its metadata search path.
+
+**note**
+When you run source oe-init-build-env, it sets up BBPATH to include the build directory and your layers. BitBake uses BBPATH to find conf/bblayers.conf in the build directory, which then defines BBLAYERS — the list of meta directories to search for other metadata. Finally, BitBake finds bitbake.conf in one of these layers (usually meta/conf).
+**
+
+This ﬁle contains all the default conﬁguration settings. Other conﬁguration ﬁles and recipes commonly override some of the variable settings in this ﬁle according to their speciﬁc requirements.
+The bitbake.conf ﬁle is part of the OpenEmbedded Core (OE-Core) metadata layer and can be found in the conﬁguration ﬁle subdirectory conf of that layer.
