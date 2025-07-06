@@ -294,9 +294,10 @@ You may also set up mirrors as part of your own build infrastructure to maintain
 ### Source Unpacking and Patching
 Once the sources are downloaded into the local download directory, they are extracted into the local build environment. If any patches were speciﬁed as part of the source download, then they are applied using Quilt.
 
-###### Quilt
+#### Quilt
 
 a patch management tool to apply, manage, and maintain multiple source patches in a stack, in a clean, repeatable way.
+
 **Quilt helps you:**
 
 - Apply multiple patches to a source tree in a defined order.
@@ -308,6 +309,7 @@ a patch management tool to apply, manage, and maintain multiple source patches i
 - Track exactly which patch makes which change.
 
 Commonly, source packages are not suitable for cross-building, and hence the majority of the patches are integration patches modifying the source for proper building with BitBake.
+
 **Most upstream source code assumes you build and run on the same machine (native build). But embedded Linux needs cross-compiling. So we add integration patches to make upstream code work with cross-toolchains and BitBake’s build rules.**
 
 ###### integration patching:
