@@ -312,7 +312,7 @@ Commonly, source packages are not suitable for cross-building, and hence the maj
 
 **Most upstream source code assumes you build and run on the same machine (native build). But embedded Linux needs cross-compiling. So we add integration patches to make upstream code work with cross-toolchains and BitBake’s build rules.**
 
-###### integration patching:
+#### integration patching:
 Fix hardcoded build paths.
 
 Add CROSS_COMPILE variables.
