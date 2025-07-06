@@ -291,6 +291,38 @@ mirrors makes builds less dependent on the availability of the upstream ﬁle se
 
 You may also set up mirrors as part of your own build infrastructure to maintain direct control of the sources included with your builds.
 
+### Source Unpacking and Patching
+Once the sources are downloaded into the local download directory, they are extracted into the local build environment. If any patches were speciﬁed as part of the source download, then they are applied using Quilt.
+
+###### Quilt
+
+a patch management tool to apply, manage, and maintain multiple source patches in a stack, in a clean, repeatable way.
+**Quilt helps you:**
+
+- Apply multiple patches to a source tree in a defined order.
+
+- Add, remove, refresh, or reorder patches easily.
+
+- Keep your upstream source clean: patches live in patches/ instead of editing source files directly.
+
+- Track exactly which patch makes which change.
+
+Commonly, source packages are not suitable for cross-building, and hence the majority of the patches are integration patches modifying the source for proper building with BitBake.
+**Most upstream source code assumes you build and run on the same machine (native build). But embedded Linux needs cross-compiling. So we add integration patches to make upstream code work with cross-toolchains and BitBake’s build rules.**
+
+###### integration patching:
+Fix hardcoded build paths.
+
+Add CROSS_COMPILE variables.
+
+Add DESTDIR for staged installs.
+
+Adjust Makefile or configure.ac to detect the target/host correctly.
+
+Remove build steps that try to run built binaries on the build host (which fail because they’re built for the target).
+**makeing the upstream source work in your cross-compile build system (BitBake).**
+
+
 ## Metadata Files
 Metadata ﬁles are subdivided into the categories conﬁguration ﬁles and recipes.
 
