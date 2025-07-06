@@ -286,12 +286,23 @@ factors, such as layer structure, layer priorities, ﬁle parsing order, and ass
 
 BitBake distinguishes several diﬀerent types of conﬁguration ﬁles, but all have the common ﬁle extension .conf .
 
-## BitBake Master Conﬁguration File (bitbake.conf)
+### BitBake Master Conﬁguration File (bitbake.conf)
+
 BitBake’s master or main conﬁguration ﬁle is named bitbake.conf . BitBake expects this ﬁle to be present in all of the directories listed in its metadata search path.
 
 **note**
 When you run source oe-init-build-env, it sets up BBPATH to include the build directory and your layers. BitBake uses BBPATH to find conf/bblayers.conf in the build directory, which then defines BBLAYERS — the list of meta directories to search for other metadata. Finally, BitBake finds bitbake.conf in one of these layers (usually meta/conf).
+![alt text](image-11.png)
 **
 
 This ﬁle contains all the default conﬁguration settings. Other conﬁguration ﬁles and recipes commonly override some of the variable settings in this ﬁle according to their speciﬁc requirements.
 The bitbake.conf ﬁle is part of the OpenEmbedded Core (OE-Core) metadata layer and can be found in the conﬁguration ﬁle subdirectory conf of that layer.
+
+### Layer Conﬁguration (layer.conf)
+
+The OpenEmbedded build system uses layers to organize metadata. A layer is essentially a hierarchy of directories and ﬁles. Every layer has its own conﬁguration ﬁle named layer.conf . This ﬁle contains path settings and ﬁle patterns for the recipe ﬁles of the layer. The layer.conf ﬁle can be found
+in the conf subdirectory of the layer.
+
+### Build Environment Layer Conﬁguration (bblayers.conf)
+A build environment needs to tell BitBake what layers it requires for its build process. The ﬁle bblayers.conf provides BitBake with information on what layers to include with the build process and the ﬁlesystem paths where they are found.
+Each build environment has its own bblayers.conf ﬁle, which can be found in the conf subdirectory of the build environment.
