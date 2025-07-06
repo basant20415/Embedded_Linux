@@ -223,18 +223,65 @@ Yocto Project brings companies together to maintain a standardized, professional
 ## typical workﬂow for building opensource software packages
 if you have built open source software packages for a Linux host system before, you may have noticed that the workﬂow follows a speciﬁc pattern. Some of the steps of this workﬂow you execute yourself, whereas others are typically carried out through some sort of automation such as Make or other source-to-binary build systems.
 
-1. Fetch: Obtain the source code.
+1. Fetch: Obtain the source code from upstream.
 
 2. Extract: Unpack the source code.
 
+After the source code is downloaded, it must be unpacked and copied from its download location to an area where you are going to build it. Typically, open source packages are wrapped into archives, most commonly into compressed tar archives, but CPIO and other formats that serialize multiple ﬁles into a single archive are also in use. The most frequently used compression formats are GZIP and BZIP, but some projects utilize other compression schemes. Once again, a build system must be able to automatically detect the format of the source archive and use the correct tools to extract it.
+
 3. Patch: Apply patches for bug ﬁxes and added functionality.
+
+Patching is the process of incrementally modifying the source code by adding, deleting, and changing the source ﬁles. There are various reasons why source code could require patching before building: applying bug and security ﬁxes, adding functionality, providing conﬁguration information, making
+adjustments for cross-compiling, and so forth.
 
 4. Conﬁgure: Prepare the build process according to the environment.
 
+For users to build the software themselves for a wide range of target systems, the build environment for the software package must be configured appropriately for the target system. Accurate configuration is particularly important for cross-build environments where the CPU architecture of the build host differs from that of the target system.
+
+Many software packages now use the GNU build system, also known as Autotools, for conﬁguration. Autotools is a suite of tools aimed at making source code software packages portable to many UNIX-like systems. Autotools is a rather complex system reﬂecting the variety and diversity of target systems and
+dependencies. In a nutshell, Autotools creates a configure script from a series of input ﬁles that characterize a particular source code body. Through a series of processing steps, configure creates a makeﬁle speciﬁcally for the target system.
+Autotools is frequently criticized for being hard to use. The diﬃculty, of course, depends on the perspective. From the user
+perspective, running a single script to conﬁgure the build environment of a source code package for a target system is certainly a huge beneﬁt. Developers who want to provide that convenience to the users of their software need to understand the workings of Autotools and how to create the necessary input ﬁles correctly. Nevertheless, it is worth the eﬀort and greatly simpliﬁes building software packages with automated build systems such as the OpenEmbedded build system for many diﬀerent target systems.
+Some software packages use their own conﬁguration system. In such cases, an automated build system needs to provide the ﬂexibility to adjust the conﬁguration step accordingly.
+
 5. Build: Compile and link.
+
+The vast majority of software packages utilize Make to build binaries such as executable program ﬁles and libraries as well as auxiliary ﬁles from source code. Some software packages may use other utilities, such as CMake or qmake, for software packages using the Qt graphical libraries.
 
 6. Install: Copy binaries and auxiliary ﬁles to their target directories.
 
+The install step copies binaries, libraries, documentation, conﬁguration, and other ﬁles to the correct locations in the target’s ﬁlesystem. Program ﬁles are typically installed in /usr/bin , for user programs, and /usr/sbin , for system administration programs. Libraries are copied to /usr/lib and
+application-speciﬁc subdirectories inside /usr/lib . Conﬁguration ﬁles are commonly installed to /etc . Although there are commonly used conventions on where to install certain ﬁles, software developers sometimes choose diﬀerent directories to install ﬁles belonging to their software packages.
+The Filesystem Hierarchy Standard (FHS)1 is a speciﬁcation for the layout of ﬁlesystems for UNIX operating systems. 
+https://wiki.linuxfoundation.org/en/FHS
+
+Most software packages provide an install target as part of their makeﬁle, which performs the installation steps. Correctly written installation targets use the install utility to copy the ﬁles from the build environment to their respective target directories. The install utility can also set ﬁle ownership and permissions while copying the ﬁles.
+
 7. Package: Bundle binaries and auxiliary ﬁles for installation on other systems.
 
+Packaging is the process of bundling the software, binaries, and auxiliary ﬁles into a single archive ﬁle for distribution and direct installation on a target system. Packaging can be as simple as a compressed tar archive that the user then extracts on the target system.
+
+For convenience and usability, most software packages bundle their ﬁles for use with an installer or package management system. Some systems include the installation software with the software archive and create an executable ﬁle for self-contained installation (.exe in windows) . Others rely on a package manager that is already installed on the target system and only bundle the actual software together with metadata information for the package manager. All systems have in common that they not only copy the ﬁles from the software package to the target system but also verify dependencies and system conﬁguration to avoid mismatching that eventually could render the system inoperable. Linux systems commonly rely on a package management system that is part of the distribution rather than using self-contained installation packages. The advantages are that the package manager, as the only instance, maintains the software database on the system and that the software packages are smaller in size because they do not need to contain the installation software. However, the maintainers for each Linux distribution decide on its package management system, which requires software packages to be packaged multiple times for diﬀerent target systems.(Different Linux distributions use different package managers and formats — so the same software must be repackaged for each one.)
+
+**Packaging isn’t just “zipping up a binary” — it’s creating a managed unit that works safely with the target’s package manager.**
+**If you skip this:**
+
+- You’d have to manually copy files into the target rootfs.
+
+- You’d lose all dependency management, rollback, upgrades.
+
+- You couldn’t easily add or remove features.
+
+
+
 If you are building the software package only for use on the host system you use for building, then you would normally stop after installing the binaries on your system. However, if you are looking to distribute the binaries for installation and use on other systems, you would also include the package step, which creates an archive that can be used by the package management system for installation
+
+## Metadata Files
+Metadata ﬁles are subdivided into the categories conﬁguration ﬁles and recipes.
+
+### Conﬁguration Files
+
+Conﬁguration ﬁles contain global build system settings in the form of simple variable assignments. BitBake maintains the variable settings in a global data dictionary, and they can be accessed within any metadata ﬁle. A variable can be set in one conﬁguration ﬁle and overwritten in another. Recipes can also set and overwrite variables, but the assignments made in recipes remain local to the recipe. BitBake employs a particular syntax for assigning metadata variables in the data dictionary. Priorities for assigning and overwriting metadata variables in data dictionary are determined by various
+factors, such as layer structure, layer priorities, ﬁle parsing order, and assignment syntax.
+
+BitBake distinguishes several diﬀerent types of conﬁguration ﬁles, but all have the common ﬁle extension .conf .
