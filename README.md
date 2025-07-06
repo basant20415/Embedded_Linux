@@ -276,6 +276,21 @@ For convenience and usability, most software packages bundle their ﬁles for us
 
 If you are building the software package only for use on the host system you use for building, then you would normally stop after installing the binaries on your system. However, if you are looking to distribute the binaries for installation and use on other systems, you would also include the package step, which creates an archive that can be used by the package management system for installation
 
+## Detailed Workﬂow Process Steps
+
+### Source Fetching
+
+The recipes call out the location of the sources such as source ﬁle packages, patches, and auxiliary ﬁles. BitBake can retrieve sources locally from the build host or remotely via network from external source repositories. Source ﬁles can be presented in a wide variety of formats such as plain and compressed tarballs. They can be retrieved via ﬁle transfer protocols like http ,https as well as obtained from source control management (SCM) systems such as Git, SVN, and many more.
+Recipes specify the locations of the source ﬁles by including their URIs in the **SRC_URI variable**. The URIs in SRC_URI usually point to the upstream source repositories of the software package, such as the ﬁle download servers or the SCM of the upstream projects.
+
+Before attempting to download a source software package from upstream repositories speciﬁed by the recipe’s SRC_URI variable, BitBake ﬁrst checks the local download directory to see whether the correct version of the source ﬁles has already been retrieved. If it cannot ﬁnd the sources in the local
+download area, BitBake then attempts to retrieve the source ﬁles from a list of mirror ﬁle servers called **premirrors** if they are conﬁgured. If none of the premirrors contains the necessary ﬁles, BitBake next tries the actual upstream repositories, as speciﬁed in SRC_URI . If it cannot ﬁnd the ﬁles there or if the upstream repositories are inaccessible, BitBake attempts to download the ﬁles from a second list of mirror servers In the context of this book, we call these servers postmirrors, although in OpenEmbedded terminology, they are simply referred to as mirrors.
+
+The Yocto Project maintains high-availability ﬁle servers on which the team places all upstream software packages. The Poky distribution conﬁguration instructs BitBake to use the Yocto Project mirrors before attempting to download ﬁles directly from upstream repositories. Using the Yocto Project
+mirrors makes builds less dependent on the availability of the upstream ﬁle servers.
+
+You may also set up mirrors as part of your own build infrastructure to maintain direct control of the sources included with your builds.
+
 ## Metadata Files
 Metadata ﬁles are subdivided into the categories conﬁguration ﬁles and recipes.
 
@@ -293,7 +308,7 @@ BitBake’s master or main conﬁguration ﬁle is named bitbake.conf . BitBake 
 **note**
 When you run source oe-init-build-env, it sets up BBPATH to include the build directory and your layers. BitBake uses BBPATH to find conf/bblayers.conf in the build directory, which then defines BBLAYERS — the list of meta directories to search for other metadata. Finally, BitBake finds bitbake.conf in one of these layers (usually meta/conf).
 ![alt text](image-11.png)
-**
+
 
 This ﬁle contains all the default conﬁguration settings. Other conﬁguration ﬁles and recipes commonly override some of the variable settings in this ﬁle according to their speciﬁc requirements.
 The bitbake.conf ﬁle is part of the OpenEmbedded Core (OE-Core) metadata layer and can be found in the conﬁguration ﬁle subdirectory conf of that layer.
@@ -304,5 +319,34 @@ The OpenEmbedded build system uses layers to organize metadata. A layer is essen
 in the conf subdirectory of the layer.
 
 ### Build Environment Layer Conﬁguration (bblayers.conf)
+
 A build environment needs to tell BitBake what layers it requires for its build process. The ﬁle bblayers.conf provides BitBake with information on what layers to include with the build process and the ﬁlesystem paths where they are found.
 Each build environment has its own bblayers.conf ﬁle, which can be found in the conf subdirectory of the build environment.
+
+### Build Environment Conﬁguration (local.conf)
+
+Local conﬁguration of a build environment is provided through a conﬁguration ﬁle named local.conf . The local.conf ﬁle contains settings that apply to the particular build environment, such as paths to download locations, build outputs, and other ﬁles; conﬁguration settings for the target system such as the target machine, package management system, and distribution policy; and many other settings. The local.conf ﬁle can be found in the conf subdirectory of the build environment.
+
+### Distribution Conﬁguration (<distribution-name>.conf)
+
+Distribution conﬁguration ﬁles contain variable settings reﬂecting policies that apply for a particular distribution built by the OpenEmbedded build system. For the Poky reference distribution, the default image name is also Poky, and its conﬁguration settings are contained in a ﬁle named poky.conf .
+Distribution policy settings typically include toolchain, C library, distribution name, and more. A distribution is selected by setting the variable DISTRO in the build environment’s local.conf ﬁle. Of course, you are not limited to the distribution policies provided by Poky as a reference. You can
+create your own distribution policy ﬁle and use it with your build environment.
+Distribution conﬁguration ﬁles are typically found in the conf/distro subdirectory of a layer deﬁning a distribution such as the meta-yocto layer.
+
+### Machine Conﬁguration (<machine-name>.conf)
+
+One of the most powerful features of the OpenEmbedded workﬂow is its capability to strictly separate parts of the build process that are dependent on the particular hardware system, the machine, and its architecture from the parts that do not depend on it. This capability greatly simpliﬁes the creation of board support packages (BSP), allowing them to provide only the necessary parts that are dependent on the hardware and thus complementing the machine-independent pieces of the build system. Consequently, building the same Linux distribution for another machine is as straightforward as
+replacing one BSP with another. A major part of this architecture consists of the machine conﬁguration ﬁles that contain variable settings for machine
+dependencies referenced by the recipes that build software packages requiring machine-speciﬁc adaptions. Machine conﬁguration ﬁles are named after the machine and can be found in the conf/machine subdirectory of a BSP layer.
+
+### Recipes
+
+BitBake recipes form the core of the build system as they deﬁne the build workﬂow for each software package. The recipes
+contain the instructions for BitBake on how to build a particular software package . BitBake recipes are identiﬁed by their .bb ﬁle extension.
+Recipes contain simple variable assignments as well as build instructions in the form of executable metadata, which are essentially functions that execute the process steps.
+In contrast to conﬁguration ﬁles, all variable assignments made within recipes are local to the recipe only. While recipes commonly reference variable settings made in conﬁguration ﬁles and sometimes overwrite them for their purposes, all settings remain local to the recipe.
+Many software packages are built in very similar ways using virtually identical build instructions following the same process steps. Repeatedly duplicating the same recipes while adjusting only a few parts that are speciﬁc to the software package would result in a lot of redundant eﬀort. Hence, BitBake provides the concept of classes, a simple inheritance mechanism that allows recipes to easily share common workﬂows. Classes can be deﬁned by any BitBake layer and are identiﬁed by their .bbclass ﬁle extension.
+
+Another BitBake mechanism for recipes that fosters reuse is append ﬁles, which are identiﬁed by their .bbappend ﬁle extension. Append ﬁles are commonly used by layers building on top of other layers to tweak recipes contained in those layers for their special requirements. In most cases, they overwrite variable settings or modify them. Append ﬁles bear the same base ﬁlename as the core recipe from another layer that they are appending.
+
