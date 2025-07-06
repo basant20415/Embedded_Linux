@@ -298,7 +298,7 @@ Once the sources are downloaded into the local download directory, they are extr
 
 a patch management tool to apply, manage, and maintain multiple source patches in a stack, in a clean, repeatable way.
 
-**Quilt helps you:**
+Quilt helps you:
 
 - Apply multiple patches to a source tree in a defined order.
 
@@ -324,7 +324,40 @@ Adjust Makefile or configure.ac to detect the target/host correctly.
 Remove build steps that try to run built binaries on the build host (which fail because they’re built for the target).
 **makeing the upstream source work in your cross-compile build system (BitBake).**
 
+### Conﬁgure, Compile, and Install
+Through its classes, OpenEmbedded provides various schemes to build standard software packages, such as Make-based packages, GNU Autotools–based packages, and CMake-based packages. These schemes oﬀer standardized ways to specify custom environment settings.
 
+Although conﬁguring, compiling, and installing are distinct steps in the build process, they are typically addressed within the same class because all of them involve invoking parts of the package’s own build system(ex:autotools).
+
+The install step is executed using the pseudo 3 command, allowing the creation of special ﬁles and permissions for owner, group, and others to be set correctly. All ﬁles are installed into a private system root directory residing within the build environment for the particular package.
+
+### Output Analysis and Packaging
+
+During output analysis, the software generated and installed by the previous step is categorized according to its functionality:
+runtime ﬁles, debug ﬁles, development ﬁles, documentation, locales. This allows the ﬁles to be split up into multiple physical packages for the package management system.
+Following the analysis, the packages are created using one or more of the common packaging formats RPM, dpkg, and ipkg.
+BitBake creates packages for the package management system classes contained in the variable PACKAGE_CLASSES in the build environment’s conﬁguration ﬁle local.conf . Although BitBake can create packages for one or more of the classes, it uses only the ﬁrst one listed to create the ﬁnal root ﬁlesystem
+for the distribution.
+
+### Image Creation
+
+The various images for the root ﬁlesystem of the distribution are created using the package feeds from the packaging step.
+The packages are installed from the package feeds into a root ﬁlesystem staging area using the package management system.
+Which packages are installed into an image is decided on by image recipes that assemble a functional set for a working system based on the deﬁned set of requirements.
+
+**Image creation is handled by the core-image class(meta->classes->core-image.bbclass)**, which, among many other tasks, evaluates the variable IMAGE_INSTALL for a list of packages to be included with the image.
+Images can be created in a variety of formats, including tar.bz2,wic,iso for extraction in a formatted ﬁlesystem and other formats, such as ext2 , ext3 , ext4 , and jffs , that can be directly bit-copied to a suitable storage device.
+
+### SDK Generation
+As an additional step, which is not part of the standard build process, with the goal of creating a bootable operating system stack, a software development kit (SDK) can be created.
+
+An SDK is a portable cross-development toolkit:
+
+- Lets application developers build, test, and debug apps for your target.
+
+- Keeps their workflow lightweight: they don’t need to run BitBake or rebuild your whole image.
+
+- Guarantees their apps are compatible with your final root filesystem.
 ## Metadata Files
 Metadata ﬁles are subdivided into the categories conﬁguration ﬁles and recipes.
 
