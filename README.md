@@ -417,3 +417,8 @@ Many software packages are built in very similar ways using virtually identical 
 
 Another BitBake mechanism for recipes that fosters reuse is append ﬁles, which are identiﬁed by their .bbappend ﬁle extension. Append ﬁles are commonly used by layers building on top of other layers to tweak recipes contained in those layers for their special requirements. In most cases, they overwrite variable settings or modify them. Append ﬁles bear the same base ﬁlename as the core recipe from another layer that they are appending.
 
+## Poky
+![alt text](image-12.png)
+
+The Poky reference distribution also includes a minimum set of base metadata layers: Yocto Project BSP ( meta-yocto-bsp ) and Yocto Project
+Distribution ( meta-yocto ).
