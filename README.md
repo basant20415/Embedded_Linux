@@ -422,3 +422,123 @@ Another BitBake mechanism for recipes that fosters reuse is append ﬁles, which
 
 The Poky reference distribution also includes a minimum set of base metadata layers: Yocto Project BSP ( meta-yocto-bsp ) and Yocto Project
 Distribution ( meta-yocto ).
+
+![alt text](image-13.png)
+
+- the script oe-init-build-env creates and initializes the build environment. This script is one of the scripts contained within the build system. A
+  build system and build environments form a 1:n relationship: a build system can be associated with any number of build environments, but a build environment can be associated with only one build system. This is an important limitation you need to be aware of when you are using more than one Yocto Project release at a time. You can use a build environment only with the version of the build system it was originally created with.
+  Using a build system to initialize a build environment that is diﬀerent from the one originally used to create the build environment leads to build failures.
+to describe this point in more details:
+1. The build system
+
+In the Yocto Project, the build system is the overall set of tools, metadata, and scripts (like bitbake, oe-init-build-env, layers, recipes, etc.) that actually build your Linux image.
+
+2. The build environment
+
+The build environment is the output of running the oe-init-build-env script. It’s basically a directory structure (build/) with specific configuration files (conf/local.conf, conf/bblayers.conf, etc.), caches, work directories, and all the intermediate files generated during builds.
+
+3. 1 : N Relationship
+
+One build system → many build environments
+You can use the same build system (e.g., a Yocto version like kirkstone) to create multiple separate build environments. For example:
+
+build/ → For Raspberry Pi build
+
+build-jetson/ → For NVIDIA Jetson build
+Both can be initialized with the same version of the Yocto Project source tree.
+
+One build environment → one build system
+Once a build environment is created, it is tied to the version of the build system that created it. You can’t just take a build directory created by kirkstone and build it with dunfell or mickledore.
+
+Why is this a limitation?
+Because Yocto evolves:
+
+The build system changes from release to release: different versions of BitBake, different layer metadata, new or changed classes, new variable names, and so on.
+
+Your build environment stores build configuration, state, and caches that depend on these specifics.
+
+Mixing these up causes conflicts — for example, tasks may fail, variables may be undefined, or incompatible layers might break your build.
+
+
+- there is other script other than oe-init-build-env which is oe-init-build-env-memres , also creates
+  and initializes build environments like oe-init-build-env but also launches a memory-resident BitBake server, which is listening on a TCP port for commands. This easily allows for running BitBake on remote build servers and controlling it from a local system over the network. The script’s command line is
+
+$ oe-init-build-env <buildenv> <port>
+
+Either the <port> argument or both arguments, <buildenv> and <port> , can be omitted, in which cases the defaults build and 12345 are used.
+
+- A build system always has to include metadata layers, which provide recipes and conﬁguration ﬁles. When you create a build environment with the oe-init-build-env script of the build system, the script automatically sets up a conf/bblayers.conf ﬁle that includes the three base layers: meta , meta-yocto-bsp , and meta-yocto .
+These base layers are suﬃcient to build the standard Poky reference distribution. However, as an embedded Linux developer, you eventually want to create your own distribution, add your own software packages, and potentially provide your own BSP for your target hardware.
+This goal is accomplished by including other metadata layers with the build system.
+
+- Because OpenEmbedded keeps everything self-contained(It does not install things globally on your computer):
+
+    You can easily use multiple Yocto versions on the same machine.
+
+    Each version has its own isolated build environment.
+
+    You can maintain your current product and develop the next one in parallel.
+
+ - BitBake, the build engine, is an integral part of the OpenEmbedded build system. It evolves with the build system, and the Yocto Project developers  
+   add new functionality to BitBake to support new features required by the build system.
+   Consequently, BitBake is included with the build system, and you can ﬁnd it in the bitbake subdirectory. Be aware that some Linux distributions include a BitBake package that you can install using the distributions package management system. If you have BitBake installed on your development host as part of the distribution, we recommend uninstalling it because it may interfere with the version contained in the build system. The build system and BitBake are matched to each other. Inadvertently using a BitBake version that does not match the build system may result on build failures.    
+
+- The bitbake directory contains a doc subdirectory that contains the BitBake documentation and man pages. The documentation is written in DocBook format.
+
+- The documentation directory contains the documentation for the Poky build system.
+
+- The following are the various manuals you can also ﬁnd on the Yocto Project’s website:
+
+    Application Development Toolkit User’s Guide (adt-manual)
+
+    BSP Developer’s Guide (bsp-guide)
+
+    Development Manual (dev-manual)
+
+    Linux Kernel Development Manual (kernel-dev)
+
+    Proﬁling and Tracing Manual (proﬁle-manual)
+
+    Reference Manual (ref-manual)
+
+    Yocto Project Quick Start (yocto-project-qs)
+
+    Toaster Manual (toaster-manual)
+
+- The LICENSE ﬁle contains the licensing information for the Poky build system.    
+- It is important to note that there can be, and commonly is, a diﬀerence in licensing of the source code of a package and the metadata (recipe) that  
+  builds that package. Be sure not to confuse the two because it can have implications for the product you are developing.
+
+- The directories starting with meta are all metadata layers:
+
+    meta: OE Core metadata layer
+
+    meta-hob: Metadata layer used by the Hob graphical user interface for BitBake
+
+    meta-selftest: Layer for testing BitBake that is used by the oe-selftest script
+
+    meta-skeleton: Template layer you can use to create your own layers
+
+    meta-yocto: Yocto Project distribution layer
+    
+    meta-yocto-bsp: Yocto Project BSP layer  
+
+### support scripts for working with Yocto Project builds
+
+bitbake-whatchanged: Lists all components that need to be
+
+rebuilt as a consequence of changes made to metadata between two builds
+
+cleanup-workdir: Removes build directories of obsolete packages from a build environment
+
+create-recipe: Creates a recipe that works with BitBake
+
+hob: Launches Hob, the graphical user interface for BitBake
+
+runqemu: Launches the QEMU emulator
+
+yocto-bsp: Creates a Yocto Project BSP layer
+
+yocto-kernel: Conﬁgures Yocto Project kernel recipes inside a Yocto Project BSP layer
+
+yocto-layer: Creates a metadata layer that works with BitBake
