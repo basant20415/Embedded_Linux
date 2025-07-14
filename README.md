@@ -389,7 +389,7 @@ in the conf subdirectory of the layer.
 
 A build environment needs to tell BitBake what layers it requires for its build process. The ﬁle bblayers.conf provides BitBake with information on what layers to include with the build process and the ﬁlesystem paths where they are found.
 Each build environment has its own bblayers.conf ﬁle, which can be found in the conf subdirectory of the build environment.
-
+The ﬁle also sets BBPATH to the top-level directory of the build environment and initializes the recipe ﬁle list BBFILES with an empty string.
 ### Build Environment Conﬁguration (local.conf)
 
 Local conﬁguration of a build environment is provided through a conﬁguration ﬁle named local.conf . The local.conf ﬁle contains settings that apply to the particular build environment, such as paths to download locations, build outputs, and other ﬁles; conﬁguration settings for the target system such as the target machine, package management system, and distribution policy; and many other settings. The local.conf ﬁle can be found in the conf subdirectory of the build environment.
@@ -542,3 +542,163 @@ yocto-bsp: Creates a Yocto Project BSP layer
 yocto-kernel: Conﬁgures Yocto Project kernel recipes inside a Yocto Project BSP layer
 
 yocto-layer: Creates a metadata layer that works with BitBake
+
+
+## Other directories and ﬁles are created during the build process.
+All build output is placed into the tmp subdirectory. You can conﬁgure this directory by setting the TMPDIR variable in the conf/local.conf ﬁle of the environment. Build output inside the tmp directory is organized into a variety of subdirectories:
+
+buildstats: This subdirectory stores build statistics organized by build target and date/time stamp when the target was built.
+
+cache: When BitBake initially parses metadata, it resolves dependencies and expressions. The results of the parsing process are written into a cache. As long as the metadata has not changed, BitBake retrieves metadata information from this cache on subsequent runs.
+
+deploy: The build output for deployment, such as target ﬁlesystem images, package feeds, and licensing information, is contained in the deploy subdirectory.
+
+log: Here is where you can ﬁnd the BitBake logging information created by the cooker process.
+
+sstate-control: This subdirectory contains the manifest ﬁles for the shared state cache organized by architecture/target and task.
+
+stamps: BitBake places completion tags and signature data for every task organized by architecture/target and package name into this subdirectory.
+
+sysroots: This subdirectory contains root ﬁlesystems organized by architecture/target. Contents includes a root ﬁlesystem for the build host containing cross-tool-chain, QEMU, and many tools used during the build process.
+
+work: Inside this directory, BitBake creates subdirectories organized by architecture/target where it builds the actual software packages.
+
+work-shared: This subdirectory is similar to work but is for shared software packages.
+
+- While build environments, and in particular the tmp directory typically located within them, cannot be easily relocated, BitBake can essentially re-create all contents of the tmp directory from the shared state cache. The shared state cache stores the intermediate output of the tasks identiﬁed by a signature that is created from its input metadata, such as task code, variables, and more. As long as the input does not change, the signature does not change, causing BitBake to use the output from the shared state cache rather than running the task. That shortens build time considerably, particularly for tasks that can take a long time to run, such as conﬁguring or compiling.
+
+## Metadata Layer Structure
+
+Metadata layers are containers to group and organize recipes, classes, conﬁguration ﬁles, and other metadata into logical entities. Layers commonly build on and extend each other. The OE Core layer forms a foundation for the layer architecture of the Poky build system. It provides recipes for a core set of software packages that are needed by most Linux OS stacks, including, of course, the Linux kernel but also bootloaders, graphics, networking, and many other packages. OE Core also provides the base classes to build software packages, package the software with package management systems, create
+ﬁlesystem images, and extend the BitBake functionality.
+
+The OE Core layer by itself, complemented by BitBake and the convenience and integration scripts, is suﬃcient for building a Linux OS stack for an emulated device. OE Core includes basic image targets as well as machine deﬁnitions for the QEMU emulator for ARM, MIPS, PowerPC, x86, and x86_64
+architectures.
+
+A build environment for a device operating system stack would typically include other layers, such as a BSP layer for actual hardware; a distribution layer specifying the OS conﬁguration for user accounts, system startup, and more; and a user interface layer and application layers for the user space
+applications providing the device functionality. 
+
+![alt text](image-14.png)
+
+## Layer Layout
+All layers, no matter what purpose they serve, have the same basic structure.
+
+![alt text](image-15.png)
+
+A metadata layer is essentially a structure comprising directories and ﬁles. The name of the top-level directory of the layer does not strictly matter; however, by convention, all layer directory names start with the term meta followed by a hyphen and the name of the layer.
+Every layer must include a conf subdirectory that must contain the layer conﬁguration ﬁle layer.conf . BitBake requires this ﬁle to set up paths and search patterns for metadata ﬁles. 
+
+**layer.conf**
+
+![alt text](image-16.png)
+![alt text](image-17.png)
+
+The ﬁrst assignment adds the layer’s directory to the BBPATH variable. The variable LAYERDIR is expanded by BitBake to the canonical path name of the layer. Then the layer’s recipes are added to the BBFILES variable. You can see that the wildcard expressions match the layout of the recipes’ directories in the layer. Wildcards for both recipes and recipe append ﬁles need to be added to BBFILES .
+BBFILE_COLLECTIONS is a list of layer names delimited by spaces. Each layer adds its name to the list. BBFILE_PATTERN contains a regular expression to match the recipes of this layer within the BBFILES variable. This variable is conditional on the layer, and hence the variable name needs to be suﬃxed with the name of the layer.
+
+Since layers depend on and extend each other, the order of processing is important. Therefore, each layer is assigned a priority by setting the variable BBFILE_PRIORITY . Layer priorities range from 1 to 10 with 1 being the lowest and 10 being the highest priority. If two layers use the same priority,
+then their order in the BBLAYERS variable of the ﬁle bblayers.conf ﬁle determines the priority.
+
+Optionally, a layer can also deﬁne a version number by setting the variable LAYERVERSION . The layer version can be used together with the LAYERDEPENDS variable to prevent including incompatible versions of a layer. If a layer depends on other layers, these dependencies can be set by adding the layers to the LAYERDEPENDS variable, which contains a list of space-delimited layer names. If the dependency is on a particular version of the layer, the version number can be speciﬁed by adding a colon and the version number.
+
+The conf subdirectory may contain other ﬁles and directories, in particular, the distro and machine subdirectories. These are optional. Typically, only a distribution layer would contain a distro subdirectory, and only BSP layers normally contain the machine subdirectory. If present, each of these two
+subdirectories contain ﬁles for distribution and machine conﬁguration.
+
+If a layer deﬁnes its own classes, they are located in the classes subdirectory.
+The layer’s recipes are grouped by category and package. A category is a collection of packages that logically belong together. For example, the category recipes-connectivity of the OE Core metadata layer contains recipes that build packages for networking, telephony, and other connectivity software.
+
+Within each category subdirectory, there are subdirectories for the diﬀerent software packages. These package subdirectories contain recipes, patches, and other ﬁles required to build the software package. Commonly, a package subdirectory contains recipes to build diﬀerent versions of the particular package.
+
+## Creating Layers
+
+Even if you have only one or two recipes to begin with, it is good practice to place your recipes into your own layer rather than add them to the OE Core layer or any of the Yocto Project layers.
+
+Your own layers separate your recipes from the common recipes, making it easy for you to migrate from one version of the OpenEmbedded build system to the next. You only need to create a new build environment with the newer build system and include your layers into this build environment.
+
+By using bbappend ﬁles in your layers, you can adjust recipes from common layers rather than duplicate or rewrite them.
+Consider the recipes in meta/recipes-kernel/linux for building the Linux kernel. For the most part, they already provide everything necessary for building the kernel. For your own BSP layer, you normally need to tweak only a couple of settings to fully support your target hardware. Rather than
+duplicating the kernel recipe, you can use bbappend ﬁles or include ﬁles to customize the base recipe to your requirements.
+
+Creating layers is simple and straightforward with the yocto-layer script. After sourcing a build environment, this script is readily available in your command search path. Simply invoke the script as
+![alt text](image-18.png)
+
+## BitBake Build Engine
+
+when for example
+![alt text](image-19.png)
+core-image-minimal corresponds to the recipe core-image-minimal.bb . However, unlike Make and Ant, BitBake does not automatically look for the recipe in the current directory. BitBake requires that you set up an execution environment before it can locate and execute build instructions.
+Bitbake when launched, it ﬁrst searches for the conf/bblayers.conf conﬁguration ﬁle in the current working directory.
+
+**conf/bblayers.conf**
+![alt text](image-20.png)
+![alt text](image-21.png)
+
+BitBake expects this ﬁle to contain a variable called BBLAYERS , which contains a list of paths to directories where the layers included in the build environment can be found. Each of these layer directories is expected to contain a ﬁle named conf/layer.conf
+![alt text](image-22.png)
+![alt text](image-23.png)
+
+The purpose of the layer conﬁguration ﬁle conf/layer.conf is to set up the variables BBPATH and BBFILES correctly so that BitBake can ﬁnd the recipes, classes, and conﬁguration ﬁles contained in the layer:
+BBPATH: BitBake uses this variable to locate classes ( .bbclass ﬁles) in a subdirectory named classes and conﬁguration ﬁles ( .conf ﬁles) in a subdirectory called conf and subdirectories thereof. The variable contains a list of colon-delimited directory paths.
+
+BBFILES: This variable contains a list of paths with wildcards, for the recipe ﬁles.
+
+A layer typically adds the path to its own top-level directory to the list of paths contained in BBPATH . BitBake automatically sets the variable LAYERDIR to the path to the top-level directory of a layer when it begins parsing the ﬁles in that layer.
+
+The layer also adds the paths to the recipe ﬁles it provides to a list of ﬁle paths contained in the BBFILES variable. The ﬁle paths represent the directory structure that contains the recipes of the layer.
+
+The three variables BBFILE_COLLECTIONS , BBFILE_PATTERN , and BBFILE_PRIORITY provide BitBake with information on how to locate and treat the recipes of this layer in regard to other layers:
+BBFILE_COLLECTIONS: Contains a list of the names of conﬁgured layers. This list is used by BitBake to ﬁnd other BBFILE_* variables in its data directory. Each layer typically adds its own name to the list.
+BBFILE_PATTERN: A regular expression telling BitBake how to locate recipe ﬁles from this layer within BBFILES . The value that a layer sets this variable to corresponds to the paths it adds to the BBFILES variable. Since all paths in BBFILES typically begin with the top-level directory of the layer, the regular expression reﬂects that convention. The name of the variable must be appended with an underscore and the name of the
+layer.
+
+BBFILE_PRIORITY: Assigns a priority to the recipes contained in this layer.
+
+After parsing conf/bblayers.conf , BitBake looks for the conﬁguration ﬁle conf/bitbake.conf , which provides the build system setup. If layers are not used and therefore no conf/bblayers.conf ﬁle is present, then the BBPATH variable needs to be set up as shown previously, and the ﬁle conf/bitbake.conf must contain variable assignments for BBFILES .
+After locating and parsing conf/bitbake.conf and other conﬁguration ﬁles, BitBake locates and parses all classes. At least one class, base contained in the ﬁle base.bbclass , must be present for BitBake to operate correctly. This class provides the basic functions and tasks, including the default build task.
+
+## BitBake Metadata
+
+BitBake uses metadata to control the build process. In general, metadata describes the software packages, how they are built, and how they relate to and depend on each other. BitBake distinguishes two types of metadata:
+
+Variables: Variables are assigned values and expressions that evaluate to values. Variables can be globally valid for the entire build system or locally valid for the current context, such as for a particular recipe. Many BitBake metadata variables contain not only a single value but a space-delimited list of values.
+
+Executable Metadata: Executable metadata are functions and tasks embedded in recipes and classes that are executed by BitBake within the context of a recipe.
+
+Metadata is organized in ﬁve categories of ﬁles:
+
+Conﬁguration Files (.conf): Metadata placed in
+
+conﬁguration ﬁles is global and aﬀects all recipes referencing them. 
+Conﬁguration ﬁles may contain only variables with no executable metadata. If the same variable is assigned in multiple conﬁguration ﬁles, then the order established by the layer priority determines which setting prevails. The conﬁguration ﬁle bitbake.conf has the lowest priority, and the local conﬁguration ﬁle of the build environment local.conf has the highest.
+
+Recipe Files (.bb): Recipes contain the metadata that describes a particular software package and how that software package is built. A recipe typically provides executable metadata in the form of tasks with instructions for downloading, unpacking, patching, compiling, packaging, and installing the software package.
+
+Class Files (.bbclass): Class ﬁles provide a simple inheritance mechanism for recipes to share the same build instructions. BitBake searches for class ﬁles inside of the classes subdirectory of a layer. Recipes can include class ﬁles by simply referencing them by their name using the inherit
+directive. Classes are global, meaning that recipes located in a layer can inherit classes from any other layer the build environment includes.
+
+Append Files (.bbappend): Append ﬁles are extensions to recipe ﬁles. Typically, a layer uses append ﬁles to extend arecipe contained in another layer. The append ﬁle must have the same base name as the recipe it extends but with the .bbappend extension instead of the .bb extension. An append
+ﬁle must also have the same path relative to the layer’s root directory as the recipe it is appending. Append ﬁles either add additional metadata or modify metadata deﬁned in the recipe. The content of an append ﬁle is literally appended to the original recipe. If append ﬁles from diﬀerent layers append the same recipe, the layer priority determines in which order BitBake appends the ﬁles to the recipe.
+
+Include Files (.inc): Any metadata ﬁle can include other ﬁles using the include and require directives. Include ﬁles commonly provide metadata that is shared among multiple metadata ﬁles. The content of the include ﬁle is inserted into the including metadata ﬁle at the position of the respective
+directive. Include ﬁles themselves may also include other ﬁles.
+
+This of course bears the risk of circular inclusion, which BitBake detects and warns about. File inclusion is not limited to the same layer, but a recipe in one layer can include a ﬁle from another. The .inc ﬁle extension is purely conventional. A metadata ﬁle can include any other metadata ﬁle; however, ﬁles containing executable metadata may be included only by recipes, append ﬁles, and classes.
+
+BitBake parses the metadata ﬁles immediately after starting and creates a metadata cache. This cache is essentially a persistent form of BitBake’s metadata dictionary. As long as there are no changes to the metadata, BitBake reads it from the cache, signiﬁcantly reducing start time.
+
+## Inclusion
+
+Metadata ﬁles can include other metadata ﬁles to allow for shared settings.
+BitBake oﬀers two inclusion directives for optional and required inclusion:
+
+![alt text](image-24.png)
+When using option inclusion with the include directive, BitBake attempts to locate the include ﬁle but silently continue operation even if it cannot ﬁnd the ﬁle. Conversely, required inclusion with the required directive causes BitBake to exit with an error message.
+
+The include and required directives can be used with
+relative and absolute paths:
+![alt text](image-25.png)
+
+When relative paths are used, BitBake tries to locate the ﬁle using the list of ﬁle paths speciﬁed by the BBPATH variable. BitBake uses the ﬁrst ﬁle it ﬁnds that has the correct path segment and ﬁlename. After BitBake locates the include ﬁle, it parses its contents and inserts the contents into the including ﬁle at the very position it encountered the inclusion directive. Hence, include ﬁles can override settings previously made by the including ﬁle, and vice versa, making it important that the inclusion directives are placed at the proper position in the including ﬁle.
+
+Recipes and classes can include ﬁles that contain conﬁguration settings as well as executable metadata. Conﬁguration ﬁles, however, can only include ﬁles
+that contain conﬁguration settings but no executable metadata, since the latter is not supported in conﬁguration ﬁles.
