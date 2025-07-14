@@ -714,3 +714,122 @@ When relative paths are used, BitBake tries to locate the ﬁle using the list o
 
 Recipes and classes can include ﬁles that contain conﬁguration settings as well as executable metadata. Conﬁguration ﬁles, however, can only include ﬁles
 that contain conﬁguration settings but no executable metadata, since the latter is not supported in conﬁguration ﬁles.
+
+## Inheritance
+
+Through classes, BitBake provides a simple inheritance
+mechanism. Classes can be inherited by recipes, append ﬁles,
+and other classes using the inherit directive:
+
+![alt text](image-26.png)
+
+Classes are metadata ﬁles with the ﬁlename extension .bbclass that are placed inside the classes subdirectory of metadata layers. The inherit directive only uses the class name, which is the base name of class ﬁlename without the extension. It can be used only in recipes, append ﬁles, and other class ﬁles.
+
+At ﬁrst glance, inheritance seems to be very similar and eventually redundant to inclusion. The diﬀerence, however, lays in how BitBake processes and parses classes:
+
+- BitBake identiﬁes classes by their class name and not by their ﬁlename and path, which means class names must be unique across all metadata layers  
+  included by a build environment.
+
+- BitBake parses classes once after it has completed parsing the conﬁguration ﬁles and before it parses the recipes. Include ﬁles are parsed when BitBake encounters an inclusion directive. If the same include ﬁle is included by multiple other ﬁles, BitBake parses the same ﬁle multiple times within the context of the including ﬁle. That makes classes a more eﬃcient mechanism for build instructions that are shared by many diﬀerent recipes.
+However, using include ﬁles for recipes building diﬀerent versions of the same software package is a good choice. since typically only one version at a time of a particular software package is built.
+
+The use of common classes simpliﬁes many recipes. For example, the autotools class for building software packages utilizing the GNU Autotools conﬁguration mechanisms can reduce a recipe to a few lines of code
+
+**Using the autotools Class**
+
+![alt text](image-27.png)
+
+The preceding recipe builds the GNU nano editor, which is an autotooled software package. The recipe itself only speciﬁes SRC_URI and package name, while all the complexities of building autotooled software packages are hidden within the autotools class.
+
+## Executable Metadata
+
+Recipes, append ﬁles, and classes can include deﬁnitions of executable metadata. Executable metadata are shell or Python functions that BitBake can execute. bitBake treats executable metadata exactly the same as variables: the function name is stored in the data dictionary together with the function code that represents the assigned value. Consequently, functions can be appended and prepended like regular variables and may also have metadata attributes.
+The scope of metadata functions deﬁned in recipes and append ﬁles is local to the particular ﬁle, whereas functions deﬁned in classes are global.
+
+### Shell Functions
+
+Executable metadata can be deﬁned as shell functions
+
+![alt text](image-28.png)
+
+The code inside the function’s body follows regular shell syntax. In fact, BitBake calls the shell interpreter /bin/sh when executing shell functions.
+
+### Python Functions
+
+Executable metadata can also be deﬁned as Python functions
+
+![alt text](image-29.png)
+
+### Global Python Functions 
+
+Functions can be deﬁned globally using the def keyword regardless of the ﬁle they are deﬁned in
+
+![alt text](image-30.png)
+
+Since the function is global, it can be called from any other Python metadata function.
+
+### Anonymous Python Functions
+
+Recipes, append ﬁles, and classes may deﬁne anonymous Python functions using the __anonymous keyword as the function’s name or by omitting the function name altogether
+
+![alt text](image-31.png)
+
+BitBake executes anonymous functions at the end of the parsing process of a particular unit. For example, an anonymous function deﬁned inside a recipe is executed after the recipe has been parsed.
+
+## Tasks
+
+![alt text](image-32.png)
+![alt text](image-33.png)
+
+This code deﬁnes the task clean and adds it to the task list with addtask . This technique allows for the task to be invoked from the BitBake command line.
+BitBake recognizes special functions called tasks. Tasks are deﬁned in recipes and classes and can be Directly invoked from the BitBake command line for a particular recipe. Automatically executed by BitBake as part of the build process.
+
+To deﬁne a shell or Python function as a task, its name must be preﬁxed with do_ . Other than that, a task is exactly like any other executable metadata. The directive addtask is used to add a task to the BitBake task list and to deﬁne a task execution chain.
+
+Running 
+
+![alt text](image-34.png)
+
+runs ﬁrst the download task, then the unpack task, then the compile task, then the build task, and ﬁnally the install task.
+
+When BitBake is invoked with the recipe as parameter but without specifying a task to be run, then it runs the default task.
+The default task is deﬁned by the variable BB_DEFAULT_TASK . This variable is set by the base class to
+
+![alt text](image-35.png)
+
+making build the default task similar to the all target for makeﬁles. Recipes and classes can of course override BB_DEFAULT_TASK setting it to a diﬀerent task.
+
+## source download
+
+### Local File Fetcher
+
+![alt text](image-36.png)
+
+**BitBake uses a deﬁned sequence to access locations and sites for ﬁles:**
+
+1. BitBake ﬁrst checks the local download directory speciﬁed by DL_DIR that the ﬁles provided in SRC_URI have already been downloaded. If that is the case, it skips accessing any upstream and mirror sites and uses the ﬁles in DL_DIR . If some of the ﬁles are present and others are not, BitBake incrementally downloads the ﬁles. If SRC_URI is an SCM repository, it veriﬁes the correct branches and tag in DL_DIR and eventually updates
+them as required.
+
+2. If ﬁles provided in SRC_URI are not available locally, BitBake attempts to download them from mirror sites speciﬁed by the PREMIRRORS variable.
+
+3. If the premirror sites do not provide the package, BitBake uses SRC_URI to download the ﬁles directly from the upstream project site.
+
+4. If downloading from the upstream project site is unsuccessful, BitBake uses the mirror sites provided by the MIRRORS variable.
+
+5. If none of the download sites provide the required ﬁles, BitBake posts an error message.Using mirrors and the preceding sequence is BitBake’s default
+behavior. If you do not want to use mirrors, you need to set either the PREMIRRORS or MIRRORS variables or both to an empty string.
+
+The PREMIRRORS and MIRRORS variables specify lists of tuples consisting of a regular expression for the key to match the SRC_URI and URI pointing to the respective mirror:
+
+![alt text](image-37.png)
+
+
+## Creating Mirrors
+
+Creating your own mirror site has advantages, such as minimizing network access for teams and controlling the sources from which your product’s Linux distribution is built. You can create your own mirror site by downloading all source packages from the Yocto Project mirror and placing them into a
+directory of an intranet server. You can also create a mirror from the download directory of a Yocto Project build environment you have been using for building a Linux distribution for your project. Your local download directory already contains all the necessary sources, but not yet in a
+format that is suitable for a mirror site. By default, and to save build time, BitBake does not create source tarballs for SCM repositories. You can instruct BitBake to create the tarballs in your local download directory by adding
+
+![alt text](image-38.png)
+
+to your conf/local.conf ﬁle. After your build has ﬁnished successfully, simply copy all the ﬁles in your download directory to your mirror server. You have to copy the ﬁles. You cannot use symbolic links to the ﬁles because the fetchers do not follow symbolic links.
