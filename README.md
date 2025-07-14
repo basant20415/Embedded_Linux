@@ -625,15 +625,23 @@ Creating layers is simple and straightforward with the yocto-layer script. After
 ## BitBake Build Engine
 
 when for example
+
 ![alt text](image-19.png)
+
+
 core-image-minimal corresponds to the recipe core-image-minimal.bb . However, unlike Make and Ant, BitBake does not automatically look for the recipe in the current directory. BitBake requires that you set up an execution environment before it can locate and execute build instructions.
 Bitbake when launched, it ﬁrst searches for the conf/bblayers.conf conﬁguration ﬁle in the current working directory.
 
 **conf/bblayers.conf**
+
+
 ![alt text](image-20.png)
 ![alt text](image-21.png)
 
+
 BitBake expects this ﬁle to contain a variable called BBLAYERS , which contains a list of paths to directories where the layers included in the build environment can be found. Each of these layer directories is expected to contain a ﬁle named conf/layer.conf
+
+
 ![alt text](image-22.png)
 ![alt text](image-23.png)
 
@@ -692,10 +700,14 @@ Metadata ﬁles can include other metadata ﬁles to allow for shared settings.
 BitBake oﬀers two inclusion directives for optional and required inclusion:
 
 ![alt text](image-24.png)
+
+
 When using option inclusion with the include directive, BitBake attempts to locate the include ﬁle but silently continue operation even if it cannot ﬁnd the ﬁle. Conversely, required inclusion with the required directive causes BitBake to exit with an error message.
 
 The include and required directives can be used with
 relative and absolute paths:
+
+
 ![alt text](image-25.png)
 
 When relative paths are used, BitBake tries to locate the ﬁle using the list of ﬁle paths speciﬁed by the BBPATH variable. BitBake uses the ﬁrst ﬁle it ﬁnds that has the correct path segment and ﬁlename. After BitBake locates the include ﬁle, it parses its contents and inserts the contents into the including ﬁle at the very position it encountered the inclusion directive. Hence, include ﬁles can override settings previously made by the including ﬁle, and vice versa, making it important that the inclusion directives are placed at the proper position in the including ﬁle.
